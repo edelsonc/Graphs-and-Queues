@@ -158,7 +158,6 @@ class Graph(object):
         """
         return self.vertexList
 
-
     def __iter__(self):
         """
         Allows the user to iterate over the keys of the graph (vertexList)
