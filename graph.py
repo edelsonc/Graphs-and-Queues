@@ -1,7 +1,6 @@
 #!/usr/bin/python
 """
-Implementation of a graph class and a shortest path algorithm. Created for use
-in Kevin Bacon index.
+Implementation of a graph class and a shortest path algorithm.
 
 author: edelsonc
 created: 10/08/2016
@@ -145,6 +144,21 @@ class Graph(object):
 
         return self.connections[vert]
 
+    def getNodes(self):
+        """
+        Returns all the nodes in the graph object.
+
+        Get List of All Nodes
+        ---------------------
+        >>> graph = Graph()
+        >>> for vert in ['A', 'B', 'C', 'F']:
+        ...     graph.addVertex(vert)
+        >>> graph.getNodes()
+        ['A', 'B', 'C', 'F']
+        """
+        return self.vertexList
+
+
     def __iter__(self):
         """
         Allows the user to iterate over the keys of the graph (vertexList)
@@ -252,7 +266,61 @@ def Dijkstra(graph, source):
                 pq.editHeap(next_node, (dist[next_node], next_node))
                 
     return dist
-    
+
+
+def check_cycles(graph):
+    """
+    Checks graph object for a cycle. Algorithm adapted from:
+    http://codereview.stackexchange.com/questions/86021/check-if-a-directed-graph-contains-a-cycle
+
+    Arguments
+    ---------
+    graph -- an object of the Graph class
+    start -- a vertex in graph
+
+    Cycle Present
+    -------------
+    >>> graph = Graph()
+    >>> graph.addConn('A', 'B')
+    >>> graph.addConn('B', 'A')
+    >>> check_cycles(graph)
+    True
+
+    No Cycle Present
+    ----------------
+    >>> graph = Graph()
+    >>> graph.addConn('A', 'B')
+    >>> graph.addConn('A', 'C')
+    >>> check_cycles(graph)
+    False
+    """
+    path = set()
+    visited = set()
+
+    return any(visit(vert, path, visited, graph) for vert in graph)
+
+
+def visit(vertex, visited, path, graph):
+    """
+    Fuction that is part of check_cycle. Acts to iterare through the path for
+    a single vertex, and find if it ever repeats. If it does, it returns True.
+    Otherwise, it will return Flase.
+
+    Arguments
+    ---------
+    vertex -- vertex whose children will be searched
+    visited, path -- sets created in the check_cycle function
+    graph -- graph being checked for a cycle
+    """
+    if vertex in visited:
+        return False
+    visited.add(vertex)
+    path.add(vertex)
+    for neighbour in graph.getConns(vertex):
+        if neighbour in path or visit(neighbour, visited, path, graph):
+            return True
+    path.remove(vertex)
+    return False
 
 if __name__ == '__main__':
     import doctest
