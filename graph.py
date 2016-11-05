@@ -88,6 +88,9 @@ class Graph(object):
         if v2 not in self.vertexList:
             self.addVertex(v2)
 
+        if v2 in self.connections[v1]:
+            return
+
         self.connections[v1].append(v2)
 
     def hasVert(self, vert):
